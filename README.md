@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Health Tracker 🫀
 
-## Getting Started
+> Aplikasi pencatat kesehatan untuk ibu — karena setiap catatan adalah bentuk cinta.
 
-First, run the development server:
+Health Tracker adalah aplikasi sederhana yang membantu anak-anak merawat orang tua dengan mencatat gula darah, tekanan darah, dan riwayat kesehatan harian. Dibangun dengan Next.js, TypeScript, Tailwind CSS, dan Supabase.
+
+🔗 **Live Demo:** [health-tracker.vercel.app](https://health-tracker.vercel.app)
+
+---
+
+## 📌 Latar Belakang
+
+Aplikasi ini lahir dari pengalaman pribadi merawat ibu yang memiliki diabetes. Gula darahnya pernah mencapai 372 mg/dL — saat itu saya sadar bahwa mencatat kesehatan secara rutin bukan hanya penting, tapi bisa menyelamatkan nyawa.
+
+Health Tracker adalah solusi untuk anak-anak yang:
+- Merawat orang tua dengan penyakit kronis
+- Ingin memantau tren kesehatan secara sederhana
+- Membutuhkan catatan riwayat yang mudah diakses
+
+---
+
+## ✨ Fitur
+
+| Fitur | Status | Keterangan |
+|-------|--------|-------------|
+| Catat gula darah | ✅ Tersedia | Input cepat nilai harian |
+| Catat tekanan darah | ✅ Tersedia | Sistolik dan diastolik |
+| Dashboard riwayat | ✅ Tersedia | 10 catatan terbaru |
+| Halaman riwayat lengkap | ✅ Tersedia | Semua catatan dalam satu halaman |
+| Grafik tren gula darah | 🚧 Rencana | Visualisasi data |
+| Pengingat jadwal obat | 🚧 Rencana | Notifikasi harian |
+| Export ke PDF | 🚧 Rencana | Backup riwayat |
+
+---
+
+## 🛠️ Tech Stack
+
+| Teknologi | Kegunaan |
+|-----------|----------|
+| **Next.js 15** | React framework dengan App Router |
+| **TypeScript** | Type safety dan developer experience |
+| **Tailwind CSS** | Styling dan responsive design |
+| **Supabase** | PostgreSQL database + API |
+| **Vercel** | Hosting dan deployment |
+
+---
+
+## 🚀 Demo & Penggunaan
+
+### Dashboard
+- Tampilkan 10 catatan terbaru
+- Tombol "Tambah Catatan Baru"
+- Tombol "Lihat Riwayat Lengkap"
+
+### Tambah Catatan
+- Input gula darah (wajib)
+- Input tekanan darah (opsional)
+- Catatan tambahan (opsional)
+
+### Riwayat Lengkap
+- Semua catatan dari awal
+- Urut dari terbaru ke terlama
+- Format tanggal Indonesia
+
+---
+
+## 📦 Cara Menjalankan di Lokal
+
+### Prasyarat
+- Node.js (v18 atau lebih baru)
+- npm atau yarn
+- Akun Supabase (gratis)
+
+### Langkah-langkah
 
 ```bash
+# Clone repository
+git clone https://github.com/fitriadamayanti12/health-tracker.git
+cd health-tracker
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env.local
+# Isi .env.local dengan kredensial Supabase
+
+# Jalankan development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
