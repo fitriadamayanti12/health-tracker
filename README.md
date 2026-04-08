@@ -4,7 +4,7 @@
 
 Health Tracker adalah aplikasi sederhana yang membantu anak-anak merawat orang tua dengan mencatat gula darah, tekanan darah, dan riwayat kesehatan harian. Dibangun dengan Next.js, TypeScript, Tailwind CSS, dan Supabase.
 
-🔗 **Live Demo:** [health-tracker.vercel.app](https://health-tracker-ln03ss2ys-fitriadamayanti12s-projects.vercel.app/)
+🔗 **Live Demo:** [health-tracker.app](https://health-tracker-eta-two.vercel.app/)
 
 ---
 
