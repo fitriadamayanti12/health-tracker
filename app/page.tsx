@@ -1,196 +1,154 @@
 'use client';
 
-import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
-import BloodSugarChart from './components/BloodSugarChart';
-import SugarTarget from './components/SugarTarget';
-import { useState, useEffect } from 'react';
+import { Shield, Zap, BarChart3, Clock, Users, Award, ArrowRight, CheckCircle } from 'lucide-react';
 
-export default function Home() {
-  const [records, setRecords] = useState<any[]>([]);
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function LandingPage() {
+  const features = [
+    {
+      icon: <Shield className="w-6 h-6 text-blue-500" />,
+      title: 'Keamanan Terjamin',
+      description: 'Data kesehatan Anda dilindungi dengan enkripsi dan autentikasi yang kuat.',
+    },
+    {
+      icon: <Zap className="w-6 h-6 text-yellow-500" />,
+      title: 'Cepat & Mudah',
+      description: 'Catat gula darah dan tekanan darah dalam hitungan detik.',
+    },
+    {
+      icon: <BarChart3 className="w-6 h-6 text-green-500" />,
+      title: 'Analisis Lengkap',
+      description: 'Lihat tren kesehatan dengan grafik dan statistik yang informatif.',
+    },
+    {
+      icon: <Clock className="w-6 h-6 text-purple-500" />,
+      title: 'Riwayat Lengkap',
+      description: 'Semua catatan tersimpan rapi dan bisa diakses kapan saja.',
+    },
+    {
+      icon: <Users className="w-6 h-6 text-red-500" />,
+      title: 'Berbagi dengan Dokter',
+      description: 'Export data ke PDF untuk konsultasi dengan dokter.',
+    },
+    {
+      icon: <Award className="w-6 h-6 text-orange-500" />,
+      title: 'Pengingat Cek',
+      description: 'Notifikasi rutin untuk tidak lupa cek kesehatan.',
+    },
+  ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Ambil data untuk riwayat (10 terbaru)
-      const { data: historyData } = await supabase
-        .from('health_records')
-        .select('*')
-        .order('recorded_at', { ascending: false })
-        .limit(10);
-
-      // Ambil data untuk grafik (7 terakhir, urutan ascending)
-      const { data: graphData } = await supabase
-        .from('health_records')
-        .select('blood_sugar, recorded_at')
-        .order('recorded_at', { ascending: true })
-        .limit(7);
-
-      setRecords(historyData || []);
-      setChartData(graphData || []);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
-
-  const exportToCSV = async () => {
-    // Ambil semua data untuk export
-    const { data: allData } = await supabase
-      .from('health_records')
-      .select('*')
-      .order('recorded_at', { ascending: false });
-
-    if (!allData || allData.length === 0) {
-      alert('Tidak ada data untuk diekspor');
-      return;
-    }
-
-    const headers = ['Tanggal', 'Gula Darah (mg/dL)', 'Tekanan Darah (Sistolik)', 'Tekanan Darah (Diastolik)', 'Catatan'];
-
-    const rows = allData.map(record => [
-      new Date(record.recorded_at).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      record.blood_sugar,
-      record.systolic || '',
-      record.diastolic || '',
-      record.notes || ''
-    ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `data-kesehatan-${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  // Format data untuk grafik
-  const formattedChartData = chartData.map((record) => ({
-    date: new Date(record.recorded_at).toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-    }),
-    blood_sugar: record.blood_sugar,
-  }));
-
-  if (loading) {
-    return (
-      <main className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <p>Memuat data...</p>
-      </main>
-    );
-  }
+  const stats = [
+    { number: '500+', label: 'Pengguna Aktif' },
+    { number: '1000+', label: 'Catatan Kesehatan' },
+    { number: '99%', label: 'Kepuasan Pengguna' },
+    { number: '24/7', label: 'Akses Online' },
+  ];
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-2">Health Tracker</h1>
-      <p className="text-gray-600 mb-8">Mencatat kesehatan ibu, merawat dengan hati</p>
-
-      <SugarTarget records={records} />
-      {/* Tombol aksi */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        <Link
-          href="/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          + Tambah Catatan
-        </Link>
-        <Link
-          href="/history"
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-        >
-          Riwayat
-        </Link>
-        <Link
-          href="/statistics"
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-        >
-          Statistik
-        </Link>
-        <Link
-          href="/reminder"
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-        >
-          Pengingat
-        </Link>
-        <Link
-          href="/symptoms"
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-        >
-          Gejala
-        </Link>
-        <Link
-          href="/report"
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-        >
-          Laporan Dokter
-        </Link>
-        <button
-          onClick={exportToCSV}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-        >
-          📥 Export CSV
-        </button>
-      </div>
-
-      {/* Grafik Tren */}
-      {formattedChartData.length > 0 && (
-        <div className="mb-8">
-          <BloodSugarChart data={formattedChartData} />
-        </div>
-      )}
-
-      {/* Riwayat Terbaru */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Riwayat Terbaru</h2>
-        {records.length === 0 && (
-          <p className="text-gray-500 text-center py-8">Belum ada catatan kesehatan. Yuk tambahkan!</p>
-        )}
-        {records.map((record) => (
-          <div key={record.id} className="border rounded-lg p-4">
-            <p className="text-sm text-gray-500">
-              {new Date(record.recorded_at).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-              <p className={`text-lg font-semibold ${record.blood_sugar > 180 ? 'text-red-600' :
-                record.blood_sugar < 70 ? 'text-yellow-600' : 'text-green-600'
-                }`}>
-                {record.blood_sugar} mg/dL
-              </p>
-              {record.systolic && record.diastolic && (
-                <p>
-                  <span className="font-medium">Tekanan Darah:</span> {record.systolic}/{record.diastolic}
-                </p>
-              )}
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Navbar */}
+      <nav className="border-b bg-white/90 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-teal-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">H</span>
             </div>
-            {record.notes && (
-              <p className="text-gray-600 text-sm mt-2">{record.notes}</p>
-            )}
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+              Health Tracker
+            </span>
           </div>
-        ))}
-      </div>
-    </main>
+          <div className="flex gap-4">
+            <Link href="/login">
+              <button className="px-4 py-2 text-gray-600 hover:text-gray-900 transition">
+                Login
+              </button>
+            </Link>
+            <Link href="/signup">
+              <button className="px-5 py-2 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-lg hover:from-blue-700 hover:to-teal-700 transition shadow-sm">
+                Sign Up
+              </button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+          Pantau Kesehatan Keluarga
+          <br />
+          dengan Mudah
+        </h1>
+        <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+          Catat gula darah, tekanan darah, dan gejala sehari-hari. Pantau tren kesehatan dengan grafik dan laporan yang mudah dipahami.
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Link href="/signup">
+            <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-xl hover:from-blue-700 hover:to-teal-700 transition shadow-md flex items-center gap-2">
+              Mulai Sekarang
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </Link>
+          <Link href="#features">
+            <button className="px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition">
+              Pelajari Lebih Lanjut
+            </button>
+          </Link>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-3xl mx-auto">
+          {stats.map((stat, index) => (
+            <div key={index}>
+              <p className="text-3xl font-bold text-gray-800">{stat.number}</p>
+              <p className="text-gray-500 text-sm">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-gray-800">Fitur Lengkap untuk Kesehatanmu</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Semua yang kamu butuhkan untuk memantau kesehatan keluarga dalam satu aplikasi
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition">
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">{feature.title}</h3>
+                <p className="text-gray-500">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-gradient-to-r from-blue-600 to-teal-600 py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">Siap Memulai?</h2>
+          <p className="text-white opacity-90 mb-8 max-w-xl mx-auto">
+            Daftar sekarang dan mulai pantau kesehatan keluarga dengan lebih baik.
+          </p>
+          <Link href="/signup">
+            <button className="px-8 py-3 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition shadow-md">
+              Daftar Gratis
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-8">
+        <div className="max-w-7xl mx-auto px-6 text-center text-gray-400 text-sm">
+          <p>© 2026 Health Tracker. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   );
 }

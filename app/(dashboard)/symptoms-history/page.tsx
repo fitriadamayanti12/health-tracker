@@ -12,9 +12,6 @@ export default async function SymptomsHistoryPage() {
     return (
         <main className="max-w-2xl mx-auto px-4 py-16">
             <div className="flex items-center gap-4 mb-8">
-                <Link href="/" className="text-blue-600 hover:underline">
-                    ← Kembali
-                </Link>
                 <h1 className="text-2xl font-bold">Riwayat Gejala</h1>
             </div>
 
